@@ -1,0 +1,90 @@
+[gd_scene load_steps=12 format=3 uid="uid://c3wq8yh1xm5qt"]
+
+[ext_resource type="Script" path="res://Assets/Scripts/WorldManager.gd" id="1_main"]
+[ext_resource type="Script" path="res://Assets/Scripts/Player.gd" id="2_player"]
+[ext_resource type="Script" path="res://Assets/Scripts/DayNightCycle.gd" id="3_daynight"]
+[ext_resource type="Script" path="res://Assets/Scripts/AmbientSound.gd" id="4_audio"]
+[ext_resource type="Script" path="res://Assets/Scripts/GrassGenerator.gd" id="5_grass"]
+[ext_resource type="Script" path="res://Assets/Scripts/ParticleEffects.gd" id="6_particles"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_1"]
+sky_material = SubResource("ProceduralSkyMaterial_1")
+
+[sub_resource type="Environment" id="Environment_1"]
+background_mode = 2
+sky = SubResource("Sky_1")
+tonemap_mode = 2
+glow_enabled = true
+fog_enabled = true
+fog_light_color = Color(0.517647, 0.639216, 0.690196, 1)
+fog_density = 0.001
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1"]
+radius = 0.5
+height = 1.8
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_1"]
+radius = 0.5
+height = 1.8
+
+[node name="MainWorld" type="Node3D"]
+script = ExtResource("1_main")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, -0.75, 0.433013, 0, 50, 0)
+light_energy = 1.2
+shadow_enabled = true
+
+[node name="Player" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+script = ExtResource("2_player")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_1")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+mesh = SubResource("CapsuleMesh_1")
+
+[node name="CameraPivot" type="Node3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Player/CameraPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+fov = 75.0
+
+[node name="Terrain" type="Node3D" parent="."]
+
+[node name="Ground" type="StaticBody3D" parent="Terrain"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Terrain/Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Terrain/Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="Forest" type="Node3D" parent="."]
+
+[node name="Animals" type="Node3D" parent="."]
+
+[node name="Hills" type="Node3D" parent="."]
+
+[node name="DayNightCycle" type="Node3D" parent="."]
+script = ExtResource("3_daynight")
+
+[node name="AmbientSound" type="Node" parent="."]
+script = ExtResource("4_audio")
+
+[node name="GrassField" type="Node3D" parent="."]
+script = ExtResource("5_grass")
+
+[node name="ParticleEffects" type="Node3D" parent="."]
+script = ExtResource("6_particles")

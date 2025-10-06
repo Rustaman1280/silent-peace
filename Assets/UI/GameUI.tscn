@@ -1,0 +1,75 @@
+[gd_scene load_steps=2 format=3 uid="uid://bkm7r8x1wq5hj"]
+
+[ext_resource type="Script" path="res://Assets/Scripts/GameUI.gd" id="1_ui"]
+
+[node name="GameUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ui")
+
+[node name="HUD" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -100.0
+offset_right = 300.0
+offset_bottom = -20.0
+grow_vertical = 0
+
+[node name="InfoLabel" type="Label" parent="HUD"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 18
+text = "SILENT PEACE - Forest World"
+
+[node name="ControlsLabel" type="Label" parent="HUD"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.8)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 14
+text = "WASD - Move | Shift - Sprint | Space - Jump
+ESC - Toggle Mouse | Mouse - Look Around"
+
+[node name="Crosshair" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CrosshairDot" type="ColorRect" parent="Crosshair"]
+custom_minimum_size = Vector2(4, 4)
+layout_mode = 2
+color = Color(1, 1, 1, 0.8)
+
+[node name="FPSLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -150.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 46.0
+grow_horizontal = 0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 16
+text = "FPS: 60"
+horizontal_alignment = 2
