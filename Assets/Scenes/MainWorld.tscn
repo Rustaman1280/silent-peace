@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://c3wq8yh1xm5qt"]
+[gd_scene load_steps=13 format=3 uid="uid://c3wq8yh1xm5qt"]
 
 [ext_resource type="Script" path="res://Assets/Scripts/WorldManager.gd" id="1_main"]
 [ext_resource type="Script" path="res://Assets/Scripts/Player.gd" id="2_player"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://Assets/Scripts/AmbientSound.gd" id="4_audio"]
 [ext_resource type="Script" path="res://Assets/Scripts/GrassGenerator.gd" id="5_grass"]
 [ext_resource type="Script" path="res://Assets/Scripts/ParticleEffects.gd" id="6_particles"]
+[ext_resource type="Script" path="res://Assets/Scripts/EnvironmentSetup.gd" id="7_environment"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -36,6 +37,7 @@ script = ExtResource("1_main")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_1")
+script = ExtResource("7_environment")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, -0.75, 0.433013, 0, 50, 0)

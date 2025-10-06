@@ -1,10 +1,10 @@
 extends CharacterBody3D
 
 # AI behavior settings
-@export var wander_speed: float = 2.0
-@export var flee_speed: float = 6.0
-@export var detection_radius: float = 8.0
-@export var safe_distance: float = 15.0
+@export var wander_speed: float = 3.0
+@export var flee_speed: float = 8.0
+@export var detection_radius: float = 12.0
+@export var safe_distance: float = 20.0
 
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 var state: String = "wander"  # wander, flee, idle
@@ -12,9 +12,14 @@ var wander_direction: Vector3 = Vector3.ZERO
 var wander_timer: float = 0.0
 var idle_timer: float = 0.0
 var target_rotation: float = 0.0
+var animation_player: AnimationPlayer = null
 
 func _ready() -> void:
 	choose_new_wander_direction()
+	# Get animation player if exists
+	var model = get_node_or_null("Model")
+	if model and model.has_meta("animation_player"):
+		animation_player = model.get_meta("animation_player")
 
 func _physics_process(delta: float) -> void:
 	# Apply gravity
@@ -48,6 +53,16 @@ func _physics_process(delta: float) -> void:
 	
 	move_and_slide()
 
+func play_animation(anim_name: String) -> void:
+	if animation_player:
+		# Try different animation name variations
+		var possible_names = [anim_name, anim_name.to_lower(), anim_name.capitalize()]
+		for name in possible_names:
+			if animation_player.has_animation(name):
+				if animation_player.current_animation != name:
+					animation_player.play(name)
+				return
+
 func handle_wander(delta: float) -> void:
 	wander_timer -= delta
 	
@@ -58,6 +73,7 @@ func handle_wander(delta: float) -> void:
 			idle_timer = randf_range(1.0, 3.0)
 			velocity.x = 0
 			velocity.z = 0
+			play_animation("Idle")
 			return
 		else:
 			choose_new_wander_direction()
@@ -67,6 +83,7 @@ func handle_wander(delta: float) -> void:
 	velocity.z = wander_direction.z * wander_speed
 	
 	target_rotation = atan2(wander_direction.x, wander_direction.z)
+	play_animation("Walk")
 
 func handle_flee(delta: float) -> void:
 	var player = get_tree().get_first_node_in_group("player")
@@ -79,11 +96,13 @@ func handle_flee(delta: float) -> void:
 		velocity.z = flee_direction.z * flee_speed
 		
 		target_rotation = atan2(flee_direction.x, flee_direction.z)
+		play_animation("Run")  # Use run animation when fleeing
 
 func handle_idle(delta: float) -> void:
 	idle_timer -= delta
 	velocity.x = 0
 	velocity.z = 0
+	play_animation("Idle")
 	
 	if idle_timer <= 0:
 		state = "wander"

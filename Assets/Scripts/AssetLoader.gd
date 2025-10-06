@@ -13,19 +13,20 @@ class_name AssetLoader
 static func load_tree_models() -> Array[PackedScene]:
 	var trees: Array[PackedScene] = []
 	
-	# Method 1: Load individual files
-	# Uncomment setelah Anda punya file tree models
+	# Load forest-appropriate trees (no snow, no autumn for main forest)
+	var tree_files = [
+		"CommonTree_1.fbx", "CommonTree_2.fbx", "CommonTree_3.fbx", "CommonTree_4.fbx", "CommonTree_5.fbx",
+		"PineTree_1.fbx", "PineTree_2.fbx", "PineTree_3.fbx", "PineTree_4.fbx", "PineTree_5.fbx",
+		"BirchTree_1.fbx", "BirchTree_2.fbx", "BirchTree_3.fbx", "BirchTree_4.fbx", "BirchTree_5.fbx",
+		"Willow_1.fbx", "Willow_2.fbx", "Willow_3.fbx", "Willow_4.fbx", "Willow_5.fbx"
+	]
 	
-	# var pine_1 = load("res://Assets/Models/Trees/pine_tree_01.glb")
-	# if pine_1:
-	# 	trees.append(pine_1)
-	
-	# var oak_1 = load("res://Assets/Models/Trees/oak_tree_01.glb")
-	# if oak_1:
-	# 	trees.append(oak_1)
-	
-	# Method 2: Auto-load all .glb files from folder
-	# trees = auto_load_models_from_folder("res://Assets/Models/Trees/")
+	for file in tree_files:
+		var path = "res://Assets/Models/Trees/" + file
+		if ResourceLoader.exists(path):
+			var tree = load(path)
+			if tree:
+				trees.append(tree)
 	
 	if trees.is_empty():
 		print("⚠️ No tree models loaded. Using placeholders.")
@@ -59,20 +60,51 @@ static func auto_load_models_from_folder(folder_path: String) -> Array[PackedSce
 # ANIMAL LOADING
 # ============================================================================
 
+static func load_animal_models() -> Array[PackedScene]:
+	var animals: Array[PackedScene] = []
+	
+	# Load various animal models (small to medium sized)
+	var animal_files = [
+		"Fox.fbx",
+		"Deer.fbx", 
+		"ShibaInu.fbx",
+		"Husky.fbx",
+		"Stag.fbx"
+	]
+	
+	for file in animal_files:
+		var path = "res://Assets/Models/Animals/" + file
+		if ResourceLoader.exists(path):
+			var animal = load(path)
+			if animal:
+				animals.append(animal)
+	
+	if not animals.is_empty():
+		print("✅ Loaded %d animal models" % animals.size())
+	else:
+		print("⚠️ No animal models found")
+	
+	return animals
+
 static func load_rabbit_model() -> PackedScene:
-	# Uncomment setelah punya rabbit model
-	# var rabbit = load("res://Assets/Models/Animals/rabbit.glb")
-	# if rabbit:
-	# 	print("✅ Rabbit model loaded")
-	# 	return rabbit
+	# Try to load Deer as rabbit substitute (closest to rabbit size)
+	var rabbit_path = "res://Assets/Models/Animals/Deer.fbx"
+	if ResourceLoader.exists(rabbit_path):
+		var rabbit = load(rabbit_path)
+		if rabbit:
+			print("✅ Deer model loaded (as rabbit)")
+			return rabbit
 	
 	print("⚠️ No rabbit model loaded. Using placeholder.")
 	return null
 
 static func load_deer_model() -> PackedScene:
-	# var deer = load("res://Assets/Models/Animals/deer.glb")
-	# if deer:
-	# 	return deer
+	var deer_path = "res://Assets/Models/Animals/Stag.fbx"
+	if ResourceLoader.exists(deer_path):
+		var deer = load(deer_path)
+		if deer:
+			print("✅ Stag model loaded")
+			return deer
 	return null
 
 # ============================================================================
@@ -81,26 +113,93 @@ static func load_deer_model() -> PackedScene:
 
 static func load_rock_models() -> Array[PackedScene]:
 	var rocks: Array[PackedScene] = []
-	# rocks = auto_load_models_from_folder("res://Assets/Models/Props/Rocks/")
+	
+	# Try loading from Trees folder (Rock models)
+	var rock_files = [
+		"Rock_1.fbx", "Rock_2.fbx", "Rock_3.fbx", "Rock_4.fbx", "Rock_5.fbx",
+		"Rock_6.fbx", "Rock_7.fbx"
+	]
+	
+	for file in rock_files:
+		var path = "res://Assets/Models/Trees/" + file
+		if ResourceLoader.exists(path):
+			var rock = load(path)
+			if rock:
+				rocks.append(rock)
+	
+	if not rocks.is_empty():
+		print("✅ Loaded %d rock models" % rocks.size())
+	else:
+		print("⚠️ No rock models found")
+	
 	return rocks
 
 static func load_bush_models() -> Array[PackedScene]:
 	var bushes: Array[PackedScene] = []
-	# bushes = auto_load_models_from_folder("res://Assets/Models/Props/Bushes/")
+	
+	# Load bush models from Props (new .gltf format)
+	var bush_files = [
+		"Bush.gltf", "Bush_Small.gltf", "Bush_Large.gltf",
+		"Bush_Flowers.gltf", "Bush_Small_Flowers.gltf", "Bush_Large_Flowers.gltf"
+	]
+	
+	for file in bush_files:
+		var path = "res://Assets/Models/Props/" + file
+		if ResourceLoader.exists(path):
+			var bush = load(path)
+			if bush:
+				bushes.append(bush)
+	
+	if not bushes.is_empty():
+		print("✅ Loaded %d bush models (GLTF)" % bushes.size())
+	else:
+		print("⚠️ No bush models found")
+	
 	return bushes
+
+static func load_flower_models() -> Array[PackedScene]:
+	var flowers: Array[PackedScene] = []
+	
+	# Load flower clump models from Props
+	var flower_files = [
+		"Flower_1_Clump.gltf", "Flower_2_Clump.gltf", "Flower_3_Clump.gltf",
+		"Flower_4_Clump.gltf", "Flower_5_Clump.gltf"
+	]
+	
+	for file in flower_files:
+		var path = "res://Assets/Models/Props/" + file
+		if ResourceLoader.exists(path):
+			var flower = load(path)
+			if flower:
+				flowers.append(flower)
+	
+	if not flowers.is_empty():
+		print("✅ Loaded %d flower models (GLTF)" % flowers.size())
+	
+	return flowers
 
 # ============================================================================
 # TEXTURE LOADING
 # ============================================================================
 
 static func load_grass_texture() -> Texture2D:
-	# Uncomment setelah punya grass texture
-	# var texture = load("res://Assets/Textures/Terrain/grass_albedo.png")
-	# if texture:
-	# 	print("✅ Grass texture loaded")
-	# 	return texture
+	# Load rocky terrain texture (original)
+	var rocky_texture_path = "res://Assets/Textures/Terrain/rocky_terrain_02_diff_1k.png"
+	if ResourceLoader.exists(rocky_texture_path):
+		var texture = load(rocky_texture_path)
+		if texture:
+			print("✅ Rocky terrain texture loaded")
+			return texture
 	
-	print("⚠️ No grass texture loaded. Using default color.")
+	# Fallback: Try grass from Props
+	var grass_texture_path = "res://Assets/Models/Props/Grass.png"
+	if ResourceLoader.exists(grass_texture_path):
+		var texture = load(grass_texture_path)
+		if texture:
+			print("✅ Grass texture loaded from Props")
+			return texture
+	
+	print("⚠️ No terrain texture loaded. Using default color.")
 	return null
 
 static func create_terrain_material() -> StandardMaterial3D:
@@ -108,23 +207,42 @@ static func create_terrain_material() -> StandardMaterial3D:
 	
 	# Load textures
 	var albedo = load_grass_texture()
-	# var normal = load("res://Assets/Textures/Terrain/grass_normal.png")
-	# var roughness = load("res://Assets/Textures/Terrain/grass_roughness.png")
+	var normal_path = "res://Assets/Textures/Terrain/rocky_terrain_02_nor_gl_1k.png"
+	var roughness_path = "res://Assets/Textures/Terrain/rocky_terrain_02_rough_1k.png"
+	var ao_path = "res://Assets/Textures/Terrain/rocky_terrain_02_ao_1k.png"
 	
+	# Apply albedo
 	if albedo:
 		material.albedo_texture = albedo
+		material.uv1_scale = Vector3(50, 50, 1)  # Tile terrain texture
+		print("✅ Terrain albedo texture applied")
 	else:
-		material.albedo_color = Color(0.2, 0.5, 0.1)  # Fallback to green
+		material.albedo_color = Color(0.4, 0.35, 0.3)  # Rocky brown color
+		print("ℹ️ Using rocky color for terrain")
 	
-	# if normal:
-	# 	material.normal_enabled = true
-	# 	material.normal_texture = normal
+	# Apply normal map for detail
+	if ResourceLoader.exists(normal_path):
+		material.normal_enabled = true
+		material.normal_texture = load(normal_path)
+		material.normal_scale = 1.0
+		print("✅ Normal map applied")
 	
-	# if roughness:
-	# 	material.roughness_texture = roughness
+	# Apply roughness
+	if ResourceLoader.exists(roughness_path):
+		material.roughness_texture = load(roughness_path)
+		print("✅ Roughness map applied")
+	else:
+		material.roughness = 0.8
 	
-	material.roughness = 0.9
-	material.uv1_scale = Vector3(10, 10, 1)  # Tile texture
+	# Apply ambient occlusion
+	if ResourceLoader.exists(ao_path):
+		material.ao_enabled = true
+		material.ao_texture = load(ao_path)
+		material.ao_light_affect = 0.5
+		print("✅ AO map applied")
+	
+	material.metallic = 0.0
+	material.cull_mode = BaseMaterial3D.CULL_BACK
 	
 	return material
 
@@ -158,10 +276,12 @@ static func load_wind_sounds() -> AudioStream:
 # ============================================================================
 
 static func load_skybox_hdr() -> Texture:
-	# var hdr = load("res://Assets/Textures/Sky/forest_skybox.hdr")
-	# if hdr:
-	# 	print("✅ HDR skybox loaded")
-	# 	return hdr
+	var hdr_path = "res://Assets/Models/Sky/hay_bales_2k.hdr"
+	if ResourceLoader.exists(hdr_path):
+		var hdr = load(hdr_path)
+		if hdr:
+			print("✅ HDR skybox loaded")
+			return hdr
 	
 	print("⚠️ No skybox loaded. Using procedural sky.")
 	return null

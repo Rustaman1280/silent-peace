@@ -11,8 +11,15 @@ extends CharacterBody3D
 @export var camera_min_angle: float = -89.0
 @export var camera_max_angle: float = 89.0
 
+# Head bobbing settings
+@export var bob_frequency: float = 2.0
+@export var bob_amplitude: float = 0.08
+@export var bob_horizontal_amplitude: float = 0.05
+
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 var camera_rotation: Vector2 = Vector2.ZERO
+var bob_time: float = 0.0
+var is_moving: bool = false
 
 @onready var camera_pivot: Node3D = $CameraPivot
 @onready var camera: Camera3D = $CameraPivot/Camera3D
@@ -61,11 +68,37 @@ func _physics_process(delta: float) -> void:
 	if direction:
 		velocity.x = direction.x * current_speed
 		velocity.z = direction.z * current_speed
+		is_moving = true
 	else:
 		velocity.x = move_toward(velocity.x, 0, current_speed)
 		velocity.z = move_toward(velocity.z, 0, current_speed)
+		is_moving = false
 	
 	move_and_slide()
+	
+	# Apply head bobbing
+	apply_head_bob(delta, current_speed)
+
+func apply_head_bob(delta: float, current_speed: float) -> void:
+	if is_moving and is_on_floor():
+		# Increase bob speed when sprinting
+		var speed_multiplier = current_speed / speed
+		bob_time += delta * bob_frequency * speed_multiplier
+		
+		# Vertical bobbing (up and down)
+		var vertical_bob = sin(bob_time * 2.0) * bob_amplitude
+		
+		# Horizontal bobbing (side to side - slower)
+		var horizontal_bob = sin(bob_time) * bob_horizontal_amplitude
+		
+		# Apply to camera
+		camera.position.y = vertical_bob
+		camera.position.x = horizontal_bob
+	else:
+		# Smoothly return to original position
+		bob_time = 0.0
+		camera.position.y = lerp(camera.position.y, 0.0, delta * 10.0)
+		camera.position.x = lerp(camera.position.x, 0.0, delta * 10.0)
 
 func _unhandled_input(event: InputEvent) -> void:
 	# Debug: Print position
